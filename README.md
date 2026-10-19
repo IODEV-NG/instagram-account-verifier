@@ -450,6 +450,40 @@ This is a greenfield project using:
 - Ruff (linting)
 - Mypy (type checking)
 
+## Portfolio Screenshots
+
+The following screenshots demonstrate the InstaVerify API in action:
+
+### API Documentation (Swagger UI)
+
+![API Documentation](portfolio-screenshots/portfolio-api-docs.png)
+
+The Swagger UI at `/docs` provides interactive API documentation for all endpoints:
+- `GET /health` — Health check
+- `GET /health/providers` — Provider status
+- `GET /api/v1/verify/{username}` — Verify a single account
+- `GET /api/v1/verify?username={username}` — Verify via query parameter
+- `POST /api/v1/verify/batch` — Batch verification (up to 50 usernames)
+
+### Automated Test Suite
+
+![Test Results](portfolio-screenshots/portfolio-test-results.png)
+
+The project includes a comprehensive test suite with 88 passing tests covering:
+- Authentication (API key verification)
+- Health endpoints
+- Meta provider (Business Discovery flow)
+- Username normalization
+- Rate limiting
+- Response schemas
+- Verification routes (single, query param, batch)
+
+### Sample API Response
+
+![Sample Response](portfolio-screenshots/portfolio-api-response.png)
+
+Example response from `GET /api/v1/verify/natgeo`. This response is generated through the local mock/demo configuration and is not live Instagram data from Meta's API.
+
 ## License
 
 MIT
