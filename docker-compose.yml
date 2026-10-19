@@ -1,0 +1,70 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: instaverify-api
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
+      - LOG_LEVEL=INFO
+      # API Authentication (set in production)
+      - API_KEY=${API_KEY:-}
+      # Meta API (set in production if using Meta provider)
+      - META_APP_ID=${META_APP_ID:-}
+      - META_APP_SECRET=${META_APP_SECRET:-}
+      - META_ACCESS_TOKEN=${META_ACCESS_TOKEN:-}
+      - META_API_VERSION=${META_API_VERSION:-v19.0}
+      - META_INSTAGRAM_ACCOUNT_ID=${META_INSTAGRAM_ACCOUNT_ID:-}
+      # Rate Limiting
+      - RATE_LIMIT_PER_MINUTE=${RATE_LIMIT_PER_MINUTE:-100}
+      - RATE_LIMIT_PER_HOUR=${RATE_LIMIT_PER_HOUR:-1000}
+      # Public Web Provider
+      - PUBLIC_WEB_ENABLED=${PUBLIC_WEB_ENABLED:-true}
+      - PUBLIC_WEB_TIMEOUT_SECONDS=${PUBLIC_WEB_TIMEOUT_SECONDS:-30}
+      # Proxy Configuration
+      - TRUST_PROXY_HEADERS=${TRUST_PROXY_HEADERS:-false}
+      # CORS
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    # Uncomment for production resource limits
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '2.0'
+    #       memory: 1G
+
+  redis:
+    image: redis:7-alpine
+    container_name: instaverify-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --save 60 1
+    restart: unless-stopped
+    # Uncomment for production resource limits
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.5'
+    #       memory: 256M
+    # Uncomment to enable Redis authentication
+    # environment:
+    #   - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+    # command: redis-server --appendonly yes --save 60 1 --requirepass ${REDIS_PASSWORD:-}
+
+volumes:
+  redis-data:
+    driver: local
+
+networks:
+  default:
+    driver: bridge

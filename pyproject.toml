@@ -1,0 +1,56 @@
+[project]
+name = "instaverify-api"
+version = "0.1.0"
+description = "Self-hosted Instagram account verification API with official Meta API integration and public-web fallback"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "IODEV-NG"},
+]
+
+[project.urls]
+Repository = "https://github.com/IODev-NG/instagram-account-verifier"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "playwright>=1.40",
+]
+
+[project.scripts]
+instaverify = "app.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+addopts = "--tb=short -v"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
