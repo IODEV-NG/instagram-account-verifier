@@ -77,3 +77,35 @@ class TestNormalizeUsername:
         """Username case is preserved after normalization."""
         assert normalize_username("@JohnDoe") == "JohnDoe"
         assert normalize_username("https://instagram.com/JohnDoe") == "JohnDoe"
+
+
+class TestInstagramShareLinks:
+    """Share links copied from the Instagram app must normalize cleanly.
+
+    The app and web share sheet append a tracking query string (`?igsh=...`)
+    or a fragment. Those links used to fail validation with a misleading
+    "exceeds max length" error, so the username was never checked.
+    """
+
+    def test_url_with_query_string_extracts_username(self):
+        assert (
+            normalize_username("https://instagram.com/john?igsh=abc123")
+            == "john"
+        )
+        assert (
+            normalize_username("https://www.instagram.com/natgeo/?igsh=MTY5")
+            == "natgeo"
+        )
+
+    def test_url_with_fragment_extracts_username(self):
+        assert normalize_username("https://instagram.com/john#top") == "john"
+
+    def test_url_with_dot_username_and_query(self):
+        assert (
+            normalize_username("https://www.instagram.com/john.doe/?igsh=x")
+            == "john.doe"
+        )
+
+    def test_query_string_does_not_bypass_validation(self):
+        with pytest.raises(UsernameValidationError):
+            normalize_username("https://instagram.com/john..doe?igsh=x")
