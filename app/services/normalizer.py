@@ -19,9 +19,11 @@ USERNAME_PATTERN: Final[re.Pattern[str]] = re.compile(
 
 MAX_USERNAME_LENGTH: Final[int] = 30
 
-# URL patterns for extracting usernames from Instagram URLs
+# URL patterns for extracting usernames from Instagram URLs.
+# Share links copied from the app or web carry a query string (`?igsh=...`)
+# or a fragment, so those suffixes are accepted and discarded.
 INSTAGRAM_URL_PATTERN: Final[re.Pattern[str]] = re.compile(
-    r"^https?://(?:www\.)?instagram\.com/([a-zA-Z0-9_.]+)/?$"
+    r"^https?://(?:www\.)?instagram\.com/([a-zA-Z0-9_.]+)/?(?:[?#].*)?$"
 )
 
 
